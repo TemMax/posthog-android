@@ -3,10 +3,6 @@ apply plugin: 'com.android.application'
 apply from: rootProject.file('gradle/android.gradle')
 
 android {
-  lintOptions {
-    // Since this is just a sample app, it's ok to ignore these warnings.
-    disable 'IconMissingDensityFolder', 'GoogleAppIndexingWarning', 'AllowBackup'
-  }
 
   compileOptions {
     sourceCompatibility 1.8
@@ -16,11 +12,14 @@ android {
   defaultConfig {
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
+    namespace 'com.posthog.android.sample'
+  lint {
+    disable 'IconMissingDensityFolder', 'GoogleAppIndexingWarning', 'AllowBackup'
+  }
 }
 
 dependencies {
   implementation project(':posthog')
-  implementation project(':posthog-wear')
 
   implementation 'uk.co.chrisjenx:calligraphy:2.3.0'
   implementation 'com.jakewharton:butterknife:8.8.1'
@@ -29,7 +28,7 @@ dependencies {
   androidTestImplementation 'com.squareup.retrofit2:retrofit:2.3.0'
   androidTestImplementation 'com.squareup.retrofit2:converter-moshi:2.3.0'
 
-  androidTestImplementation 'com.android.support:support-annotations:28.0.0'
+  androidTestImplementation 'androidx.annotation:annotation:1.5.0'
   androidTestImplementation 'com.android.support.test:runner:1.0.2'
   androidTestImplementation 'com.android.support.test:rules:1.0.2'
 

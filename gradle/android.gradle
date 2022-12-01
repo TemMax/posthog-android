@@ -1,54 +1,32 @@
-apply plugin: 'com.diffplug.gradle.spotless'
-apply plugin: 'com.vanniktech.android.junit.jacoco'
-
 android {
-  compileSdkVersion rootProject.ext.compileSdkVersion
-  buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
 
-  defaultConfig {
-    minSdkVersion rootProject.ext.minSdkVersion
-    targetSdkVersion rootProject.ext.targetSdkVersion
-    versionCode rootProject.ext.versionCode
-    versionName rootProject.ext.versionName
-  }
-
-  dexOptions {
-    preDexLibraries rootProject.ext.preDexLibraries
-  }
-
-  packagingOptions {
-    exclude 'LICENSE.txt'
-  }
-
-  buildTypes {
-    release {
-      minifyEnabled false
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
     }
-    debug {
-      testCoverageEnabled true
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
     }
-  }
 
-  compileOptions {
-    sourceCompatibility rootProject.ext.sourceCompatibilityVersion
-    targetCompatibility rootProject.ext.targetCompatibilityVersion
-  }
-
-  lintOptions {
-    textReport true
-    textOutput 'stdout'
-    disable 'InvalidPackage', 'GradleCompatible'
-  }
-
-  testOptions {
-    unitTests.all {
-     systemProperty 'robolectric.dependency.repo.url', 'https://repo1.maven.org/maven2'
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
     }
-  }
-}
 
-spotless {
-  java {
-    googleJavaFormat()
-  }
+    compileOptions {
+        sourceCompatibility rootProject.ext.sourceCompatibilityVersion
+        targetCompatibility rootProject.ext.targetCompatibilityVersion
+    }
+
+    lintOptions {
+        textReport true
+        textOutput 'stdout'
+        disable 'InvalidPackage', 'GradleCompatible'
+    }
+
 }

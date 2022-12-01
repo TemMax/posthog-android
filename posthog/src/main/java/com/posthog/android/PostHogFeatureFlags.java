@@ -4,10 +4,8 @@ import static com.posthog.android.Persistence.ENABLED_FEATURE_FLAGS_KEY;
 import static com.posthog.android.internal.Utils.DEFAULT_FLAG_RELOAD_DEBOUNCE_INTERVAL;
 import static com.posthog.android.internal.Utils.closeQuietly;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-
-import com.google.gson.Gson;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -166,19 +165,28 @@ public class PostHogFeatureFlags {
 
             // Write payload to output stream
             OutputStream os = con.getOutputStream();
-            byte[] input = stringifiedPayload.getBytes("utf-8");
+            byte[] input = stringifiedPayload.getBytes(StandardCharsets.UTF_8);
             os.write(input, 0, input.length);
 
             // Read response from input stream
             BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(), "utf-8")
+                    new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8)
             );
             StringBuilder response = new StringBuilder();
             String responseLine = null;
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
-            HashMap<String, Object> mapResponse = new Gson().fromJson(response.toString(), HashMap.class);
+
+            HashMap<String, Object> mapResponse = new HashMap<>();
+            JSONObject responseJson = new JSONObject(response.toString());
+            responseJson.keys().forEachRemaining((String key) -> {
+                try {
+                    mapResponse.put(key, responseJson.get(key));
+                } catch (JSONException e) {
+                    logger.error(e, "Error while sending reload feature flags request");
+                }
+            });
 
             this.receivedFeatureFlags(mapResponse);
 
